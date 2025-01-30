@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, UsePipes, ValidationPipe } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { Transaction } from './transaction.model';
+import { CreateTransactionDto } from './dto/create-transaction.dto';
 
 @Controller('transactions')
 export class TransactionsController {
@@ -12,7 +13,9 @@ export class TransactionsController {
   }
 
   @Post('create')
-  async createTransaction(@Body() transactionData: Partial<Transaction>): Promise<Transaction> {
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  async createTransaction(@Body() transactionData: CreateTransactionDto): Promise<Transaction> {
     return this.transactionsService.create(transactionData);
   }
+
 }
