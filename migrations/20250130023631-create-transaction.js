@@ -8,6 +8,8 @@ module.exports = {
         allowNull: false,
         unique: true,
         primaryKey: true,
+        autoIncrement: true, // Ahora será autoincremental
+
       },
       customer_name: {
         type: Sequelize.STRING,
