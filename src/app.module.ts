@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 // import { TransactionsModule } from './transactions/transactions.module';
 import { TransactionsModule } from './transactions/transactions.module';
+import { S3Module } from './s3/s3.module';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { TransactionsModule } from './transactions/transactions.module';
       database: process.env.DB_NAME,
       autoLoadModels: true,
       synchronize: false, // Usaremos migraciones
-    }), TransactionsModule,
+    }), TransactionsModule, S3Module,
     // TransactionsModule, // Importar el módulo de transacciones
   ],
 })

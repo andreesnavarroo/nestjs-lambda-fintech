@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, UsePipes, ValidationPipe, Param } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { Transaction } from './transaction.model';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
@@ -18,4 +18,11 @@ export class TransactionsController {
     return this.transactionsService.create(transactionData);
   }
 
+
+  @Post('import/:fileKey')
+  async importTransactions(@Param('fileKey') fileKey: string) {
+    return this.transactionsService.processCsvFromS3(fileKey);
+  }
+
+  
 }
