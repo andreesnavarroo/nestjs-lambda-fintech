@@ -74,7 +74,7 @@ export class TransactionsService {
         });
 
         // Resolver la promesa cuando termine de procesar el archivo
-        parser.on('end', () => resolve('Transacción exitosa.'));
+        parser.on('end', () => resolve('Su transacción ha sido procesada exitosamente.'));
 
         // Manejo de errores en el parsing del CSV
         parser.on('error', (error) =>
