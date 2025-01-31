@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { Transaction } from './transaction.model';
-import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { CreateTransactionDto, UploadFileDto } from './dto/create-transaction.dto';
 
 @Controller('transactions')
 export class TransactionsController {
@@ -34,14 +34,10 @@ export class TransactionsController {
     return this.transactionsService.create(transactionData);
   }
 
-  @Post('import/:fileKey')
-  async importTransactions(@Param('fileKey') fileKey: string) {
-    console.log('✅ Endpoint /import llamado con fileKey:', fileKey);
-    console.log(
-      '🔍 TransactionsService dentro de método:',
-      this.transactionsService ? 'Disponible' : 'NO DISPONIBLE',
-    );
-
-    return this.transactionsService.processCsvFromS3(fileKey);
+  
+  @Post('import')
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  async importTransactions(@Body() uploadFileDto: UploadFileDto) {
+    return this.transactionsService.processCsvFromS3(uploadFileDto.fileKey);
   }
 }

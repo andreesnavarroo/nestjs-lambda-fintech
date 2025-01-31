@@ -4,6 +4,8 @@ import {
   IsPositive,
   IsEnum,
   IsDateString,
+  Matches,
+  IsString,
 } from 'class-validator';
 
 export class CreateTransactionDto {
@@ -24,4 +26,14 @@ export class CreateTransactionDto {
 
   @IsDateString({}, { message: 'Transaction date must be a valid date' })
   transaction_date: string;
+}
+
+
+export class UploadFileDto {
+
+  @IsNotEmpty({ message: 'fileKey is required' })
+  @IsString()
+  @Matches(/\.csv$/, { message: 'El archivo debe tener extensión .csv' })
+  fileKey: string;
+
 }
