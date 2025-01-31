@@ -17,6 +17,16 @@ jobs:
       - name: 📥 Clonar el repositorio
         uses: actions/checkout@v3
 
+      - name: 📄 Crear archivo .env con variables de entorno
+        run: |
+          echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> .env
+          echo "AWS_BUCKET_NAME=${{ secrets.AWS_BUCKET_NAME }}" >> .env
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
+          echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
+          echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+          echo "DB_PASS=${{ secrets.DB_PASS }}" >> .env
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+
       - name: 🔑 Configurar AWS con OIDC
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -34,9 +44,6 @@ jobs:
 
       - name: 🔨 Construir el proyecto
         run: npm run build
-
-      # - name: ✅ Validar código con ESLint
-      #   run: npm run lint
 
       - name: 🚀 Desplegar en AWS Lambda con Serverless
         run: npx serverless deploy
