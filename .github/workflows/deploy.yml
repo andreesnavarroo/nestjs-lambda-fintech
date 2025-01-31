@@ -1,0 +1,42 @@
+name: 🚀 Deploy NestJS Lambda
+
+on:
+  push:
+    branches:
+      - main  # Se ejecuta solo en la rama main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write  # 🔑 Permite autenticación con OIDC
+      contents: read
+
+    steps:
+      - name: 📥 Clonar el repositorio
+        uses: actions/checkout@v3
+
+      - name: 🔑 Configurar AWS con OIDC
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::904233124762:role/NestJSLambdaDeployRole  # 🔥 Pega aquí el ARN del rol
+          aws-region: us-east-2  # Cambia si usas otra región
+
+      - name: 📦 Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: 📦 Instalar dependencias
+        run: npm install
+
+      - name: 🔨 Construir el proyecto
+        run: npm run build
+
+      - name: ✅ Validar código con ESLint
+        run: npm run lint
+
+      - name: 🚀 Desplegar en AWS Lambda con Serverless
+        run: npx serverless deploy
