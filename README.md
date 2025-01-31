@@ -1,153 +1,109 @@
-# 🚀 NestJS Lambda Fintech
+# 🚀 NestJS Lambda Fintech Transactions
 
-Este proyecto es una API **serverless** desarrollada con **NestJS**, desplegada en **AWS Lambda** utilizando **Serverless Framework**. Permite la gestión de **transacciones financieras**, procesando datos desde archivos **CSV almacenados en S3** y guardándolos en una base de datos **MySQL en AWS RDS** mediante **Sequelize**.
+Este proyecto implementa un servicio backend con **NestJS**, diseñado para ejecutarse en **AWS Lambda** mediante **Serverless Framework**. Se integra con **MySQL (RDS)** y **Amazon S3** para el almacenamiento de archivos CSV, y soporta CI/CD con **GitHub Actions** sin exponer claves de AWS.
+
+## 🏗️ Tecnologías Utilizadas
+
+- **NestJS** → Framework para Node.js
+- **Serverless Framework** → Despliegue en AWS Lambda
+- **MySQL (RDS)** → Base de datos
+- **Amazon S3** → Almacenamiento de archivos CSV
+- **Sequelize ORM** → Gestión de base de datos con migraciones
+- **TypeScript** → Tipado fuerte para el código
+- **GitHub Actions** → CI/CD automatizado con autenticación segura mediante OIDC (sin uso de claves de AWS)
 
 ---
 
-## 📌 Tecnologías Utilizadas
+## 🔧 Instalación Local
 
-- **NestJS** – Framework modular de Node.js para aplicaciones escalables.
-- **AWS Lambda** – Plataforma serverless para ejecutar la API.
-- **Sequelize** – ORM para manejar la base de datos MySQL en AWS RDS.
-- **AWS S3** – Almacenamiento de archivos CSV.
-- **Serverless Framework** – Herramienta para despliegue en AWS.
-- **TypeScript** – Tipado seguro para mejor mantenibilidad.
-
----
-
-
-## 🚀 Instalación y Configuración
-
-### 1️⃣ **Clonar el repositorio**
+### 1️⃣ Clonar el repositorio
 ```bash
 git clone https://github.com/tu-usuario/nestjs-lambda-fintech.git
 cd nestjs-lambda-fintech
 ```
 
-### 2️⃣ **Instalar dependencias**
+### 2️⃣ Instalar dependencias
 ```bash
 npm install
 ```
 
-### 3️⃣ **Configurar variables de entorno**
-Crea un archivo `.env` en la raíz con las siguientes variables:
-```env
-DB_HOST=your-db-host
+### 3️⃣ Configurar variables de entorno
+Crea un archivo `.env` basado en `.env.example`:
+```ini
+AWS_REGION=us-east-2
+AWS_BUCKET_NAME=fintech-transactions-bucket
+DB_HOST=your-rds-endpoint.amazonaws.com
 DB_PORT=3306
-DB_USER=your-db-user
-DB_PASS=your-db-pass
-DB_NAME=your-db-name
-AWS_BUCKET_NAME=your-bucket-name
-AWS_REGION_=your-region
+DB_USER=admin
+DB_PASS=yourpassword
+DB_NAME=fintech
 ```
 
-### 4️⃣ **Ejecutar en desarrollo**
+### 4️⃣ Ejecutar en local
+Para correr en modo desarrollo:
 ```bash
 npm run start:dev
 ```
-
-### 5️⃣ **Ejecutar en modo serverless offline**
+Para emular AWS Lambda localmente:
 ```bash
-sls offline
-```
-
-### 6️⃣ **Desplegar en AWS Lambda**
-```bash
-sls deploy
+npx serverless offline
 ```
 
 ---
 
-## 📄 API - Endpoints Principales
+## 📦 Migraciones con Sequelize
 
-### 🟢 **Crear una transacción**
-```http
-POST /transactions/create
-```
-📥 **Body (JSON)**
-```json
-{
-  "customer_name": "Juan Pérez",
-  "amount": 100.50,
-  "transaction_type": "DEPOSIT",
-  "status": "COMPLETED",
-  "transaction_date": "2025-01-30",
-  "description": "Depósito inicial"
-}
-```
-📤 **Respuesta (JSON)**
-```json
-{
-  "transaction_id": 1,
-  "customer_name": "Juan Pérez",
-  "amount": 100.50,
-  "transaction_type": "DEPOSIT",
-  "status": "COMPLETED",
-  "transaction_date": "2025-01-30T00:00:00.000Z",
-  "description": "Depósito inicial",
-  "createdAt": "2025-01-30T12:00:00.000Z",
-  "updatedAt": "2025-01-30T12:00:00.000Z"
-}
+### Generar una nueva migración
+```bash
+npx sequelize-cli migration:generate --name create-transactions-table
 ```
 
-### 🟢 **Listar transacciones**
-```http
-GET /transactions/all
+### Aplicar migraciones
+```bash
+npx sequelize-cli db:migrate
 ```
-📤 **Respuesta (JSON)**
-```json
-[
-  {
-    "transaction_id": 1,
-    "customer_name": "Juan Pérez",
-    "amount": 100.50,
-    "transaction_type": "DEPOSIT",
-    "status": "COMPLETED",
-    "transaction_date": "2025-01-30T00:00:00.000Z",
-    "description": "Depósito inicial"
-  }
-]
-```
-
-### 🟢 **Importar transacciones desde S3**
-```http
-POST /transactions/import/{fileKey}
-```
-📌 `fileKey` es el nombre del archivo CSV en S3 (ejemplo: `transactions/transactions.csv`).
 
 ---
 
-## ☁️ Despliegue en AWS Lambda
+## 🚀 CI/CD con GitHub Actions
 
-### 1️⃣ **Configurar credenciales de AWS**
+El despliegue en AWS Lambda está automatizado mediante **GitHub Actions** con autenticación segura usando **OIDC**, lo que permite conectarse a AWS sin necesidad de exponer claves de acceso (`AWS_ACCESS_KEY_ID` y `AWS_SECRET_ACCESS_KEY`).
+
+Cada vez que se hace un `push` a `main`, el workflow realiza:
+1️⃣ **Instalación de dependencias y compilación del proyecto**
+2️⃣ **Autenticación segura con AWS mediante OIDC**
+3️⃣ **Carga automática de variables de entorno desde GitHub Secrets**
+4️⃣ **Despliegue en AWS Lambda con Serverless Framework**
+
+Para modificar la configuración del workflow, edita el archivo:
+📌 `.github/workflows/deploy.yml`
+
+---
+
+## 🛠️ Despliegue Manual en AWS Lambda
+Si necesitas desplegar manualmente:
 ```bash
-aws configure
+npx serverless deploy
 ```
-
-### 2️⃣ **Deploy con Serverless Framework**
+Para eliminar la función de AWS:
 ```bash
-sls deploy
+npx serverless remove
 ```
-📌 Esto subirá la función Lambda y generará una URL pública.
 
-### 3️⃣ **Obtener la URL de la API**
-Después del deploy, revisa la salida en la terminal para obtener la **URL de la API**:
-```
-Service Information
-service: fintech-transactions
-stage: production
-region: us-east-2
-endpoint: https://xyz123.execute-api.us-east-2.amazonaws.com/production
-```
-✅ La API estará accesible en:
-```
-https://xyz123.execute-api.us-east-2.amazonaws.com/production/transactions/all
+---
+
+## 📡 Endpoints disponibles
+```http
+GET    /transactions/all        # Listar transacciones
+POST   /transactions/create     # Crear una nueva transacción
+POST   /transactions/import/:fileKey  # Importar transacciones desde S3
 ```
 
 ---
 
 ## 📜 Licencia
-Este proyecto está bajo la **Licencia MIT**.
+Este proyecto está bajo la licencia MIT.
 
 📌 **Autor:** Ing. Andres Navarro
+
 
