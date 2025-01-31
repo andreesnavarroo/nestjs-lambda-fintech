@@ -2,7 +2,13 @@ import { Table, Column, Model, DataType } from 'sequelize-typescript';
 
 @Table({ tableName: 'transactions', timestamps: true })
 export class Transaction extends Model {
-  @Column({ type: DataType.INTEGER, allowNull: false, unique: true, primaryKey: true, autoIncrement: true })
+  @Column({
+    type: DataType.INTEGER,
+    allowNull: false,
+    unique: true,
+    primaryKey: true,
+    autoIncrement: true,
+  })
   transaction_id: number;
 
   @Column({ type: DataType.STRING, allowNull: false })
@@ -28,10 +34,10 @@ export class Transaction extends Model {
 
   @Column({ type: DataType.STRING, allowNull: true })
   description: string;
-  
+
   @Column({ type: DataType.DATE, allowNull: false, defaultValue: DataType.NOW })
   createdAt: Date;
-  
+
   @Column({ type: DataType.DATE, allowNull: false, defaultValue: DataType.NOW })
-  updatedAt: Date;  
+  updatedAt: Date;
 }

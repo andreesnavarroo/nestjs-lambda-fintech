@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsNumber, IsPositive, IsEnum, IsDateString } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsPositive,
+  IsEnum,
+  IsDateString,
+} from 'class-validator';
 
 export class CreateTransactionDto {
   @IsNotEmpty({ message: 'Customer name is required' })
@@ -8,7 +14,9 @@ export class CreateTransactionDto {
   @IsPositive({ message: 'Amount must be greater than 0' })
   amount: number;
 
-  @IsEnum(['DEPOSIT', 'WITHDRAWAL', 'TRANSFER', 'PAYMENT'], { message: 'Invalid transaction type' })
+  @IsEnum(['DEPOSIT', 'WITHDRAWAL', 'TRANSFER', 'PAYMENT'], {
+    message: 'Invalid transaction type',
+  })
   transaction_type: string;
 
   @IsEnum(['COMPLETED', 'PENDING', 'FAILED'], { message: 'Invalid status' })
