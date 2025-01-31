@@ -9,8 +9,7 @@ export class S3Service {
 
     constructor() {
     this.s3 = new S3Client({
-        region: process.env.AWS_REGION ?? 'us-east-1', 
-        credentials: fromIni({ profile: 'prueba' }), 
+        region: process.env.AWS_REGION_ ?? 'us-east-1', 
     });
     }
 

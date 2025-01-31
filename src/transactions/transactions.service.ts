@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Transaction } from './transaction.model';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
-import { S3Service } from 'src/s3/s3.service';
+import { S3Service } from '../s3/s3.service';
 import { Readable } from 'stream';
 import { parse } from 'csv-parse';
 

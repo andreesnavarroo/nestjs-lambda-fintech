@@ -1,0 +1,37 @@
+service: fintech-transactions
+
+provider:
+  name: aws
+  stage: prod
+  runtime: nodejs18.x # ✅ Usamos la última versión estable de Node.js
+  architecture: arm64 # ✅ Lambda más rápida y barata
+  region: us-east-2 # ✅ La misma región donde está tu RDS
+  memorySize: 2048 # ✅ 2GB de RAM para procesar archivos CSV sin problemas
+  logRetentionInDays: 7 # ✅ Mantener logs por 7 días para depuración
+  timeout: 30 # ✅ Aumentamos a 30s por si el archivo CSV es grande
+  environment:
+    AWS_BUCKET_NAME: fintech-transactions-bucket
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "s3:GetObject"      # Permite leer archivos en S3
+        - "s3:ListBucket"     # Permite listar los archivos del bucket
+      Resource:
+        - "arn:aws:s3:::fintech-transactions-bucket"
+        - "arn:aws:s3:::fintech-transactions-bucket/*"
+
+package:
+  individually: true 
+
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-offline
+
+functions:
+  api:
+    handler: dist/lambda.handler
+    events:
+      - http:
+          path: /{proxy+}
+          method: any

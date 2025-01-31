@@ -5,7 +5,10 @@ import { CreateTransactionDto } from './dto/create-transaction.dto';
 
 @Controller('transactions')
 export class TransactionsController {
-  constructor(private readonly transactionsService: TransactionsService) {}
+  constructor(private readonly transactionsService: TransactionsService) {
+    console.log('🚀 TransactionsController inicializado.');
+    console.log('🔍 TransactionsService:', !!this.transactionsService ? 'Disponible' : 'NO DISPONIBLE');    
+  }
 
   @Get('all')
   async getAllTransactions(): Promise<Transaction[]> {
@@ -21,6 +24,9 @@ export class TransactionsController {
 
   @Post('import/:fileKey')
   async importTransactions(@Param('fileKey') fileKey: string) {
+    console.log('✅ Endpoint /import llamado con fileKey:', fileKey);
+    console.log('🔍 TransactionsService dentro de método:', !!this.transactionsService ? 'Disponible' : 'NO DISPONIBLE');
+
     return this.transactionsService.processCsvFromS3(fileKey);
   }
 
