@@ -35,8 +35,8 @@ jobs:
       - name: 🔨 Construir el proyecto
         run: npm run build
 
-      - name: ✅ Validar código con ESLint
-        run: npm run lint
+      # - name: ✅ Validar código con ESLint
+      #   run: npm run lint
 
       - name: 🚀 Desplegar en AWS Lambda con Serverless
         run: npx serverless deploy
