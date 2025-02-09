@@ -25,12 +25,13 @@ package:
   individually: true 
 
 plugins:
-  - serverless-dotenv-plugin
+  - serverless-plugin-typescript  # Soporte para TypeScript
   - serverless-offline
+  - serverless-dotenv-plugin
 
 functions:
   api:
-    handler: dist/lambda.handler
+    handler: src/lambda.handler
     events:
       - http:
           path: /{proxy+}
