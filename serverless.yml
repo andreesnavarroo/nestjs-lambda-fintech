@@ -32,6 +32,7 @@ plugins:
 custom:
   esbuild:
     plugins: esbuild-plugins.js
+    keepOutputDirectory: true
 
     bundle: true
     minify: true
@@ -44,7 +45,10 @@ custom:
       - '@nestjs/microservices/microservices-module'
       - '@nestjs/microservices'
       - 'pg-hstore'
+      - '@types/node'
 
+    packager: "npm"
+    installExtraArgs: ["--no-save"]
 functions:
   api:
     handler: src/lambda.handler

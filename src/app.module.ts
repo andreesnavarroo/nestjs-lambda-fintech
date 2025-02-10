@@ -11,6 +11,7 @@ import { S3Module } from './s3/s3.module';
     SequelizeModule.forRootAsync({
       useFactory: () => ({
         dialect: 'mysql',
+        dialectModule: require('mysql2'), // ✅ Esto es clave para que funcione en AWS Lambda
         host: process.env.DB_HOST,
         port: Number(process.env.DB_PORT),
         username: process.env.DB_USER,

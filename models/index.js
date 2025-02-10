@@ -11,11 +11,16 @@ const db = {};
 
 let sequelize;
 if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+  sequelize = new Sequelize(process.env[config.use_env_variable], {
+    ...config,
+    dialectModule: require('mysql2') // ✅ Esto fuerza Sequelize a usar mysql2 en AWS Lambda
+  });
 } else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
+  sequelize = new Sequelize(config.database, config.username, config.password, {
+    ...config,
+    dialectModule: require('mysql2') // ✅ También aquí para asegurar que siempre lo use
+  });
 }
-
 fs
   .readdirSync(__dirname)
   .filter(file => {
