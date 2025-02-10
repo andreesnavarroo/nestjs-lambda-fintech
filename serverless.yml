@@ -3,31 +3,47 @@ service: fintech-transactions
 provider:
   name: aws
   stage: prod
-  runtime: nodejs18.x # ✅ Usamos la última versión estable de Node.js
-  architecture: arm64 # ✅ Lambda más rápida y barata
-  region: us-east-2 # ✅ La misma región donde está tu RDS
-  memorySize: 2048 # ✅ 2GB de RAM para procesar archivos CSV sin problemas
-  logRetentionInDays: 7 # ✅ Mantener logs por 7 días para depuración
-  timeout: 30 # ✅ Aumentamos a 30s por si el archivo CSV es grande
+  runtime: nodejs18.x
+  architecture: arm64
+  region: us-east-2
+  memorySize: 2048
+  logRetentionInDays: 7
+  timeout: 30
   environment:
     AWS_BUCKET_NAME: fintech-transactions-bucket
 
   iamRoleStatements:
     - Effect: "Allow"
       Action:
-        - "s3:GetObject"      # Permite leer archivos en S3
-        - "s3:ListBucket"     # Permite listar los archivos del bucket
+        - "s3:GetObject"
+        - "s3:ListBucket"
       Resource:
         - "arn:aws:s3:::fintech-transactions-bucket"
         - "arn:aws:s3:::fintech-transactions-bucket/*"
 
 package:
-  individually: true 
+  individually: true
 
 plugins:
-  - serverless-plugin-typescript  # Soporte para TypeScript
+  - serverless-esbuild
   - serverless-offline
   - serverless-dotenv-plugin
+
+custom:
+  esbuild:
+    plugins: esbuild-plugins.js
+
+    bundle: true
+    minify: true
+    sourcemap: true
+    target: 'node18'
+    platform: 'node'
+    concurrency: 10
+    external:
+      - '@nestjs/websockets/socket-module'
+      - '@nestjs/microservices/microservices-module'
+      - '@nestjs/microservices'
+      - 'pg-hstore'
 
 functions:
   api:
