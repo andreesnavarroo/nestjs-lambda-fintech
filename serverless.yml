@@ -11,6 +11,13 @@ provider:
   timeout: 30
   environment:
     AWS_BUCKET_NAME: fintech-transactions-bucket
+    DB_HOST: ${env:DB_HOST}
+    DB_USER: ${env:DB_USER}
+    DB_PASSWORD: ${env:DB_PASSWORD}
+    DB_PORT: ${env:DB_PORT}
+    DB_NAME: ${env:DB_NAME}
+    AWS_REGION_: ${env:AWS_REGION_}
+
 
   iamRoleStatements:
     - Effect: "Allow"
